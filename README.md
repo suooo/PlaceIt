@@ -1,138 +1,88 @@
-# PlaceIt - 공간 예약 관리 시스템
+# 🏢 PlaceIt  
+**회사의 회의실·공용 공간을 한 눈에 관리하는 공간 예약 플랫폼**
 
-> 쉽고 빠른 공간 예약 관리 시스템으로 회의실과 공용 공간을 효율적으로 관리하세요.
+쉽고 빠른 공간 예약 관리 시스템으로  
+회의실과 공용 공간을 효율적으로 관리하세요.
 
-## 🚀 기술 스택
+🔗 **Demo**  
+https://placeit-client-332546556871.asia-northeast1.run.app/
 
-- **Frontend**: Next.js 15, TypeScript
-- **Styling**: Tailwind CSS, shadcn/ui
-- **Font**: Pretendard (한글 최적화)
+---
 
-## 🌿 브랜치 전략
+## 📌 프로젝트 소개
 
-### 브랜치 구조
+**PlaceIt**은 여러 개의 회사를 한 계정에서 관리할 수 있는  
+**멀티 워크스페이스 기반 공간 예약 관리 서비스**입니다.
 
-```
-main (프로덕션)
-├── develop (개발 통합)
-    ├── feature/기능명
-    ├── fix/버그명
-    └── hotfix/긴급수정명
-```
+운영자는 회의실과 공용 공간을 등록 및 승인/거절하고,  
+구성원들은 웹에서 쉽고 직관적으로 예약·조회할 수 있습니다.
 
-### 워크플로우
+> “별도의 매뉴얼 없이도 직관적으로 사용할 수 있는 서비스” — 프로그래머스 CTO 리뷰 中
 
-1. `develop`에서 새 브랜치 생성
-2. 기능 개발 후 `develop`에 머지
-3. 안정화 후 `main`에 머지
+---
 
-## 📝 커밋 메시지 컨벤션
+## ✨ 주요 기능
 
-### 커밋 유형
+### 👥 워크스페이스 & 멤버 관리
+- 여러 회사를 **워크스페이스 단위**로 분리하여 관리
+- 초대 코드로 워크스페이스 참여 가능, 코드가 없으면 새로운 워크스페이스 생성
+- 역할 기반 권한 설정 (`SUPER_ADMIN`, `ADMIN`, `MEMBER`)
+- 워크스페이스 전환 기능으로 **멀티 조직 환경** 지원
 
-| 유형               | 의미                                                         |
-| ------------------ | ------------------------------------------------------------ |
-| `Feat`             | 새로운 기능 추가                                             |
-| `Fix`              | 버그 수정                                                    |
-| `Docs`             | 문서 수정                                                    |
-| `Style`            | 코드 formatting, 세미콜론 누락, 코드 자체의 변경이 없는 경우 |
-| `Refactor`         | 코드 리팩토링                                                |
-| `Test`             | 테스트 코드, 리팩토링 테스트 코드 추가                       |
-| `Chore`            | 패키지 매니저 수정, 그 외 기타 수정 ex) .gitignore           |
-| `Design`           | CSS 등 사용자 UI 디자인 변경                                 |
-| `Comment`          | 필요한 주석 추가 및 변경                                     |
-| `Rename`           | 파일 또는 폴더 명을 수정하거나 옮기는 작업만인 경우          |
-| `Remove`           | 파일을 삭제하는 작업만 수행한 경우                           |
-| `!BREAKING CHANGE` | 커다란 API 변경의 경우                                       |
-| `!HOTFIX`          | 급하게 치명적인 버그를 고쳐야 하는 경우                      |
+### 🏢 공간(스페이스) 관리
+- **자유 예약 공간** / **승인 필요 공간** 두 유형의 회의실 등록
+- 수용 인원, 위치, 비치 장비(빔프로젝터, 모니터, 화이트보드 등) 설정
+- 공간별 이미지 및 편의시설 아이콘 제공
+- 상단에서 **공간 통계**, **검색**, **필터** 기능 제공
 
-### 커밋 메시지 예시
+### 📅 예약 관리
+- 일 / 주 / 월 단위 캘린더로 예약 현황 시각화
+- 예약 상태: `승인대기 (PENDING)` · `승인 (APPROVED)` · `반려 (REJECTED)`
+- 예약 시간 중복 자동 방지 및 시각적 중첩 구분 표시
+- 상단에서 **예약 통계**, **검색**, **필터** 제공
 
-```bash
-Feat: 실시간 예약 대시보드 구현
-Fix: Safari에서 버튼 클릭 안되는 오류 해결
-Docs: README 브랜치 전략 가이드 추가
-```
+### 👤 사용자 & 그룹 관리
+- 워크스페이스 내 전체 사용자 목록 조회 및 역할 변경
+- 팀/부서 단위 운영을 위한 **그룹 생성 및 관리 기능**
+- 그룹별 멤버 관리 및 권한 기반 기능 제어 지원
 
-## 🛠️ 개발 환경 설정
+---
 
-### 1. 저장소 클론
 
-```bash
-git clone https://github.com/prgms-team3/client.git
-cd placeit-frontend
-```
+## 🛠 기술 스택
 
-### 2. 의존성 설치
+### Frontend
 
-```bash
-npm install
-```
+| Category     | Tech                                                             |
+| ------------ | ---------------------------------------------------------------- |
+| Framework    | **Next.js 15** (App Router)                                     |
+| Language     | **TypeScript**                                                  |
+| Styling      | **Tailwind CSS**, **shadcn/ui**                                 |
+| State        | Zustand (유저/워크스페이스/예약 상태 관리)                      |
+| ETC          | Axios, React Hook Form 등                                       |
 
-### 3. 개발 서버 실행
+### 기타
 
-```bash
-npm run dev
-```
+- 폰트: **Pretendard** (한글 가독성 최적화)
+- 배포: Google Cloud Run
+- 형상관리: Git / GitHub, Git Flow 브랜치 전략
 
-### 4. Git Flow 워크플로우
+---
 
-#### 1. 기능 개발
+## 🧱 아키텍처 & 폴더 구조
 
 ```bash
-# develop에서 새 기능 브랜치 생성
-git checkout develop
-git pull origin develop
-git checkout -b feature/기능명
-
-# 개발 작업 후 커밋 및 푸시
-git add .
-git commit -m "feat: 기능 설명"
-git push origin feature/기능명
-```
-
-#### 2. PR 생성 (GitHub 웹)
-
-- `feature/기능명` → `develop` PR 생성
-- 리뷰어 지정 및 리뷰 요청
-- PR 설명에 기능 상세 내용 작성
-
-#### 3. 코드 리뷰 & 머지 (GitHub 웹)
-
-- 팀원 코드 리뷰 진행
-- 리뷰 의견 반영 및 수정
-- 승인 후 `develop`에 머지
-
-#### 4. 정리
-
-```bash
-# develop 브랜치 최신화 및 로컬 브랜치 정리
-git checkout develop
-git pull origin develop
-git branch -d feature/기능명
-```
-
-#### 5. 배포 (GitHub 웹)
-
-- `develop` → `main` PR 생성
-- 최종 승인 및 머지
-- 자동 배포 또는 수동 배포 진행
-
-## 📁 프로젝트 구조
-
-```
 src/
 ├── app/                    # Next.js App Router
-│   ├── (auth)/            # 인증 관련 페이지
-│   ├── (dashboard)/       # 대시보드 페이지들
-│   ├── globals.css        # 전역 스타일
-│   ├── layout.tsx         # 루트 레이아웃
-│   └── page.tsx           # 랜딩 페이지
-├── components/            # 재사용 컴포넌트
-│   └── ui/               # shadcn/ui 컴포넌트
-└── lib/                  # 유틸리티 함수
+│   ├── (auth)/             # 로그인 / 회원가입 등 인증 관련 페이지
+│   ├── (dashboard)/        # 워크스페이스 / 예약 대시보드
+│   ├── globals.css         # 전역 스타일
+│   ├── layout.tsx          # 루트 레이아웃
+│   └── page.tsx            # 랜딩 페이지
+├── components/             # 재사용 컴포넌트
+│   └── ui/                 # shadcn/ui 기반 컴포넌트
+└── lib/                    # 유틸 함수, API 클라이언트 등
 
 public/
-├── fonts/                # 폰트 파일
-└── icons/                # 아이콘 파일
-```
+├── fonts/                  # 폰트 파일
+└── icons/                  # 아이콘 파일
