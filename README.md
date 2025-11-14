@@ -20,6 +20,28 @@ https://placeit-client-332546556871.asia-northeast1.run.app/
 > “별도의 매뉴얼 없이도 직관적으로 사용할 수 있는 서비스” — 프로그래머스 CTO 리뷰 中
 
 ---
+
+## 👥 팀 구성 및 역할
+
+### 🧑‍💻 Frontend
+- **박수연 ([suooo](https://github.com/suooo))** - 팀장 / 프론트엔드
+  - 퍼블리싱
+  - 전역 상태 관리(Zustand) 설계
+  - OAuth 로그인 포함 전체 API 연동
+
+### 🧑‍💻 Backend
+- **안정환 ([jnghwn99](https://github.com/jnghwn99))** - 백엔드
+  - 인증/인가 구현
+  - 사용자·그룹 기능 API 개발
+  - Docker · Google Cloud 배포
+
+- **조영래 ([Florenshio](https://github.com/Florenshio))** - 백엔드
+  - 워크스페이스 기능 개발
+  - 회의실 관리 기능 API 개발
+  - 예약 기능 API 개발
+    
+---
+
 ## ✨ 주요 기능
 
 ### 👥 워크스페이스 & 멤버 관리
