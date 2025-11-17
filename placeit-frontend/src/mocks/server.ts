@@ -1,9 +1,18 @@
 import { AxiosError } from 'axios';
-import type { AxiosAdapter, AxiosRequestConfig, AxiosResponse } from 'axios';
-import { mockState, type MockGroup, type MockReservation, type MockSpace } from './data';
+import type {
+  AxiosAdapter,
+  InternalAxiosRequestConfig,
+  AxiosResponse,
+} from 'axios';
+import {
+  mockState,
+  type MockGroup,
+  type MockReservation,
+  type MockSpace,
+} from './data';
 
 function buildResponse(
-  config: AxiosRequestConfig,
+  config: InternalAxiosRequestConfig,
   status: number,
   data: unknown
 ): AxiosResponse {
@@ -18,7 +27,7 @@ function buildResponse(
 }
 
 function success(
-  config: AxiosRequestConfig,
+  config: InternalAxiosRequestConfig,
   status: number,
   data: unknown
 ): Promise<AxiosResponse> {
@@ -26,7 +35,7 @@ function success(
 }
 
 function failure(
-  config: AxiosRequestConfig,
+  config: InternalAxiosRequestConfig,
   status: number,
   message: string,
   data: unknown = { message }
@@ -48,7 +57,7 @@ function parseBody(data: unknown) {
   return data;
 }
 
-function getUrlParts(config: AxiosRequestConfig) {
+function getUrlParts(config: InternalAxiosRequestConfig) {
   const base = config.baseURL ?? 'https://mock.placeit';
   const raw = config.url ?? '';
   const url = new URL(raw, base);
@@ -159,7 +168,10 @@ function computeAvailableSlots(spaceId: number, date: string) {
   );
   if (!workspaceId) {
     return [
-      { startTime: new Date(dayStart).toISOString(), endTime: new Date(dayEnd).toISOString() },
+      {
+        startTime: new Date(dayStart).toISOString(),
+        endTime: new Date(dayEnd).toISOString(),
+      },
     ];
   }
   const reservations = getReservations(Number(workspaceId)).filter(
@@ -178,12 +190,18 @@ function computeAvailableSlots(spaceId: number, date: string) {
   const closing = dayStart.getTime() + 20 * 60 * 60 * 1000; // 20:00
   for (const range of ranges) {
     if (range.start > cursor) {
-      slots.push({ startTime: new Date(cursor).toISOString(), endTime: new Date(Math.min(range.start, closing)).toISOString() });
+      slots.push({
+        startTime: new Date(cursor).toISOString(),
+        endTime: new Date(Math.min(range.start, closing)).toISOString(),
+      });
     }
     cursor = Math.max(cursor, range.end);
   }
   if (cursor < closing) {
-    slots.push({ startTime: new Date(cursor).toISOString(), endTime: new Date(closing).toISOString() });
+    slots.push({
+      startTime: new Date(cursor).toISOString(),
+      endTime: new Date(closing).toISOString(),
+    });
   }
   return slots;
 }
@@ -251,7 +269,9 @@ export const mockAdapter: AxiosAdapter = async config => {
     }
   }
 
-  const workspaceActionMatch = path.match(/^\/workspaces\/(\d+)\/(activate|deactivate)$/);
+  const workspaceActionMatch = path.match(
+    /^\/workspaces\/(\d+)\/(activate|deactivate)$/
+  );
   if (workspaceActionMatch && method === 'PATCH') {
     const id = Number(workspaceActionMatch[1]);
     const workspace = mockState.workspaces.find(w => w.id === id);
@@ -269,7 +289,9 @@ export const mockAdapter: AxiosAdapter = async config => {
       imageUrl: body?.imageUrl ?? mockState.workspaces[0]?.imageUrl ?? '',
       activeInvitationCode: body?.code ?? `WS-${nextId}`,
       isActive: true,
-      superAdminName: mockState.users.find(u => u.id === mockState.currentUserId)?.name ?? '관리자',
+      superAdminName:
+        mockState.users.find(u => u.id === mockState.currentUserId)?.name ??
+        '관리자',
     };
     mockState.workspaces.unshift(newWorkspace);
     mockState.workspaceUsers[nextId] = [
@@ -291,8 +313,11 @@ export const mockAdapter: AxiosAdapter = async config => {
 
   if (method === 'POST' && path === '/workspaces/join') {
     const code = String(body?.code ?? '');
-    const workspace = mockState.workspaces.find(w => w.activeInvitationCode === code);
-    if (!workspace) return failure(config, 404, '초대 코드를 찾을 수 없습니다.');
+    const workspace = mockState.workspaces.find(
+      w => w.activeInvitationCode === code
+    );
+    if (!workspace)
+      return failure(config, 404, '초대 코드를 찾을 수 없습니다.');
     const members = getWorkspaceUsers(workspace.id);
     if (!members.some(m => m.userId === mockState.currentUserId)) {
       members.push({
@@ -328,7 +353,9 @@ export const mockAdapter: AxiosAdapter = async config => {
     }
   }
 
-  const workspaceUserDeleteMatch = path.match(/^\/workspaces\/(\d+)\/users\/(\d+)$/);
+  const workspaceUserDeleteMatch = path.match(
+    /^\/workspaces\/(\d+)\/users\/(\d+)$/
+  );
   if (workspaceUserDeleteMatch && method === 'DELETE') {
     const workspaceId = Number(workspaceUserDeleteMatch[1]);
     const userId = Number(workspaceUserDeleteMatch[2]);
@@ -438,15 +465,17 @@ export const mockAdapter: AxiosAdapter = async config => {
   }
 
   if (method === 'GET' && path === '/reservations/my') {
-    const list: MockReservation[] = Object.values(mockState.reservations).flat();
+    const list: MockReservation[] = Object.values(
+      mockState.reservations
+    ).flat();
     const mine = list.filter(r => r.userId === mockState.currentUserId);
     return success(config, 200, { reservations: mine.map(reservationPayload) });
   }
 
   if (method === 'POST' && path === '/reservations') {
     const spaceId = Number(body?.spaceId);
-    const resolvedSpaceEntry = Object.entries(mockState.spaces).find(([, list]) =>
-      list.some(s => s.id === spaceId)
+    const resolvedSpaceEntry = Object.entries(mockState.spaces).find(
+      ([, list]) => list.some(s => s.id === spaceId)
     );
     const resolvedWorkspaceId = resolvedSpaceEntry
       ? Number(resolvedSpaceEntry[0])
@@ -511,7 +540,8 @@ export const mockAdapter: AxiosAdapter = async config => {
 
   if (method === 'GET' && path === '/reservations/available-times') {
     const spaceId = Number(query.get('spaceId') ?? body?.spaceId ?? 0);
-    const date = query.get('date') ?? body?.date ?? new Date().toISOString().slice(0, 10);
+    const date =
+      query.get('date') ?? body?.date ?? new Date().toISOString().slice(0, 10);
     const slots = computeAvailableSlots(spaceId, date);
     return success(config, 200, { availableSlots: slots });
   }
@@ -536,7 +566,10 @@ export const mockAdapter: AxiosAdapter = async config => {
       name: body?.name ?? '새 그룹',
       description: body?.description ?? '',
       leaderName: body?.leaderName ?? '리더',
-      type: (body?.type as string)?.toUpperCase() === 'ADMIN' ? 'ADMIN' : 'DEPARTMENT',
+      type:
+        (body?.type as string)?.toUpperCase() === 'ADMIN'
+          ? 'ADMIN'
+          : 'DEPARTMENT',
       maxMembers: Number(body?.maxMembers ?? 0),
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
@@ -556,7 +589,10 @@ export const mockAdapter: AxiosAdapter = async config => {
         name: body?.name ?? group.name,
         description: body?.description ?? group.description,
         maxMembers: body?.maxMembers ?? group.maxMembers,
-        type: (body?.type as string)?.toUpperCase() === 'ADMIN' ? 'ADMIN' : 'DEPARTMENT',
+        type:
+          (body?.type as string)?.toUpperCase() === 'ADMIN'
+            ? 'ADMIN'
+            : 'DEPARTMENT',
         leaderName: body?.leader ?? body?.leaderName ?? group.leaderName,
         updatedAt: new Date().toISOString(),
       });
@@ -621,7 +657,9 @@ export const mockAdapter: AxiosAdapter = async config => {
   if (groupLeaveMatch && method === 'DELETE') {
     const group = findGroupById(Number(groupLeaveMatch[1]));
     if (!group) return failure(config, 404, '그룹을 찾을 수 없습니다.');
-    const idx = group.members.findIndex(m => m.userId === mockState.currentUserId);
+    const idx = group.members.findIndex(
+      m => m.userId === mockState.currentUserId
+    );
     if (idx >= 0) group.members.splice(idx, 1);
     return success(config, 200, { ok: true });
   }
