@@ -151,7 +151,8 @@ export default function LoginPage() {
                     Mock 데이터로 바로 체험하기
                   </CardTitle>
                   <CardDescription className="text-gray-600">
-                    워크스페이스 참여 여부에 따라 대시보드 또는 초대코드 화면으로 이동합니다
+                    워크스페이스 참여 여부에 따라 <br /> 대시보드 또는 초대코드
+                    화면으로 이동합니다
                   </CardDescription>
                 </div>
                 <div className="space-y-3">
@@ -173,7 +174,9 @@ export default function LoginPage() {
                             <p className="font-semibold text-gray-900">
                               {user.name}
                             </p>
-                            <p className="text-sm text-gray-500">{user.email}</p>
+                            <p className="text-sm text-gray-500">
+                              {user.email}
+                            </p>
                           </div>
                           <span
                             className={`text-xs font-semibold px-3 py-1 rounded-full ${
