@@ -1,5 +1,9 @@
 'use client';
 
+import { useState } from 'react';
+import Image from 'next/image';
+import { useRouter } from 'next/navigation';
+
 import { Button } from '@/components/ui/button';
 import {
   Card,
@@ -7,12 +11,38 @@ import {
   CardDescription,
   CardTitle,
 } from '@/components/ui/card';
-import Image from 'next/image';
+import { api } from '@/lib/axios';
+import { USE_MOCK } from '@/config/env';
+import { mockState, type MockUser } from '@/mocks/data';
+import { useUserStore } from '@/stores/userStore';
 
 // const SERVER = process.env.NEXT_PUBLIC_API_BASE_URL!;
 const SERVER = 'https://placeit-server-332546556871.asia-northeast1.run.app';
 
+const MOCK_TOKEN = 'mock-access-token';
+
+function getMockMembership(userId: number) {
+  for (const [workspaceId, members] of Object.entries(
+    mockState.workspaceUsers
+  )) {
+    const membership = members.find(member => member.userId === userId);
+    if (membership) {
+      const workspace = mockState.workspaces.find(
+        ws => ws.id === Number(workspaceId)
+      );
+      if (workspace) {
+        return { workspace, membership };
+      }
+    }
+  }
+  return null;
+}
+
 export default function LoginPage() {
+  const router = useRouter();
+  const { setAuth } = useUserStore();
+  const [mockLoadingId, setMockLoadingId] = useState<number | null>(null);
+
   const handleKakaoLogin = () => {
     window.location.href = `${SERVER}/auth/kakao`;
   };
@@ -20,6 +50,29 @@ export default function LoginPage() {
   const handleGoogleLogin = () => {
     window.location.href = `${SERVER}/auth/google`;
   };
+
+  const handleMockLogin = async (user: MockUser) => {
+    if (!USE_MOCK) return;
+    try {
+      setMockLoadingId(user.id);
+      mockState.currentUserId = user.id;
+      localStorage.setItem('accessToken', MOCK_TOKEN);
+
+      const { data: me } = await api.get('/users/me', {
+        headers: { Authorization: `Bearer ${MOCK_TOKEN}` },
+      });
+      setAuth({ user: me, accessToken: MOCK_TOKEN });
+
+      const membership = getMockMembership(user.id);
+      router.replace(membership ? '/dashboard' : '/invite-check');
+    } catch (error) {
+      console.error('[mock-login] failed', error);
+    } finally {
+      setMockLoadingId(null);
+    }
+  };
+
+  const mockUsers = USE_MOCK ? mockState.users : [];
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-white to-blue-50/30">
@@ -90,6 +143,59 @@ export default function LoginPage() {
                 </div>
               </Button>
             </div>
+
+            {USE_MOCK && (
+              <div className="mt-10">
+                <div className="text-center mb-4">
+                  <CardTitle className="text-xl font-semibold text-gray-900">
+                    Mock 데이터로 바로 체험하기
+                  </CardTitle>
+                  <CardDescription className="text-gray-600">
+                    워크스페이스 참여 여부에 따라 대시보드 또는 초대코드 화면으로 이동합니다
+                  </CardDescription>
+                </div>
+                <div className="space-y-3">
+                  {mockUsers.map(user => {
+                    const membership = getMockMembership(user.id);
+                    return (
+                      <button
+                        key={user.id}
+                        onClick={() => handleMockLogin(user)}
+                        disabled={mockLoadingId === user.id}
+                        className={`w-full text-left border rounded-lg p-4 transition-all ${
+                          mockLoadingId === user.id
+                            ? 'bg-gray-100 cursor-not-allowed opacity-70'
+                            : 'hover:border-blue-400 hover:bg-blue-50'
+                        }`}
+                      >
+                        <div className="flex items-center justify-between">
+                          <div>
+                            <p className="font-semibold text-gray-900">
+                              {user.name}
+                            </p>
+                            <p className="text-sm text-gray-500">{user.email}</p>
+                          </div>
+                          <span
+                            className={`text-xs font-semibold px-3 py-1 rounded-full ${
+                              membership
+                                ? 'bg-blue-100 text-blue-700'
+                                : 'bg-purple-100 text-purple-700'
+                            }`}
+                          >
+                            {membership ? '워크스페이스 참여중' : '신규 로그인'}
+                          </span>
+                        </div>
+                        <p className="text-sm text-gray-600 mt-2">
+                          {membership
+                            ? `${membership.workspace.name} · ${membership.membership.role}`
+                            : '초대코드 입력 또는 워크스페이스 생성 플로우로 이동합니다'}
+                        </p>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
           </CardContent>
         </Card>
 

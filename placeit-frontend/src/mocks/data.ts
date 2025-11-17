@@ -162,6 +162,17 @@ const users: MockUser[] = [
     updatedAt: isoNow,
     isActive: true,
   },
+  {
+    id: 5,
+    email: 'newbie@placeit.io',
+    provider: 'GOOGLE',
+    providerId: 'google-5',
+    name: '김온보딩',
+    phone: null,
+    createdAt: isoNow,
+    updatedAt: isoNow,
+    isActive: true,
+  },
 ];
 
 const workspaces: MockWorkspace[] = [
