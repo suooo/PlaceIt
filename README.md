@@ -157,3 +157,19 @@ https://placeit-client-332546556871.asia-northeast1.run.app/
 - 폰트: **Pretendard** (한글 가독성 최적화)
 - 배포: Google Cloud Run
 - 형상관리: Git / GitHub, Git Flow 브랜치 전략
+
+---
+
+## 🧪 Mock 데이터 모드로 배포하기
+
+백엔드 API 없이도 제품 화면을 그대로 시연할 수 있도록 **모의 API 어댑터**를 포함했습니다. `NEXT_PUBLIC_USE_MOCK=true` 환경 변수를 활성화하면 axios가 로컬 mock 서버를 사용하며, 워크스페이스·회의실·예약·그룹 등의 더미 데이터가 자동으로 제공됩니다.
+
+1. `.env.local` 파일을 만들고 아래 값을 추가합니다.
+
+   ```bash
+   NEXT_PUBLIC_USE_MOCK=true
+   ```
+
+2. 이후 `npm run dev` 혹은 `npm run build && npm run start`를 실행하면 모든 API 호출이 mock 데이터로 응답합니다.
+
+> Mock 데이터는 회의실 등록/예약/그룹 관리 기능까지 포함하여 실제 서비스 흐름을 그대로 재현할 수 있도록 구성되어 있습니다.

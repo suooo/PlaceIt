@@ -1,11 +1,20 @@
 import axios from 'axios';
+import { USE_MOCK } from '@/config/env';
+import { mockAdapter } from '@/mocks/server';
+
 // const BASE = process.env.NEXT_PUBLIC_API_BASE_URL;
 const BASE = 'https://placeit-server-332546556871.asia-northeast1.run.app';
 
 export const api = axios.create({
   baseURL: BASE,
   withCredentials: true, // ← 쿠키 전송/수신
+  adapter: USE_MOCK ? mockAdapter : undefined,
 });
+
+if (USE_MOCK) {
+  // eslint-disable-next-line no-console
+  console.info('[mock] NEXT_PUBLIC_USE_MOCK=true, axios mock adapter enabled');
+}
 
 // 요청에 accessToken 헤더 자동 첨부
 api.interceptors.request.use(config => {
