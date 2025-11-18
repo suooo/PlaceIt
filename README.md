@@ -4,8 +4,9 @@
 쉽고 빠른 공간 예약 관리 시스템으로  
 회의실과 공용 공간을 효율적으로 관리하세요.
 
-🔗 **Demo**  
-https://placeit-client-332546556871.asia-northeast1.run.app/
+🔗 **Vercel Demo**  
+https://place-it-zeta.vercel.app/   
+*(Mock 데이터 기반 데모로, 별도 로그인/백엔드 서버 없이 대부분의 기능을 시연할 수 있습니다.)*
 
 ---
 
@@ -44,24 +45,6 @@ https://placeit-client-332546556871.asia-northeast1.run.app/
 
 ## ✨ 주요 기능
 
-### 👥 워크스페이스 & 멤버 관리
-<div style="display: flex; gap: 10px; align-items: flex-start;">
-  <img 
-    src="https://github.com/user-attachments/assets/a329e9d3-f78b-4cef-b762-db5b21eaaa32" 
-    style="width: 48%; height: 260px; object-fit: cover; object-position: top;" 
-  />
-  <img 
-    src="https://github.com/user-attachments/assets/6042159f-3b4b-4fc0-9199-85cde55ba6dc"
-    style="width: 48%; height: 260px; object-fit: cover; object-position: top;" 
-  />
-</div>
-
-- 여러 회사를 **워크스페이스 단위**로 분리하여 관리
-- 초대 코드로 워크스페이스 참여 가능, 코드가 없으면 새로운 워크스페이스 생성
-- 역할 기반 권한 설정 (`SUPER_ADMIN`, `ADMIN`, `MEMBER`)
-- 워크스페이스 전환 기능으로 **멀티 조직 환경** 지원
-
-
 ### 🔐 OAuth 기반 인증 (로그인 & 회원가입)
 <div style="display: flex; gap: 10px; align-items: flex-start;">
   <img 
@@ -81,6 +64,24 @@ https://placeit-client-332546556871.asia-northeast1.run.app/
 - **Google / Kakao OAuth** 간편 로그인/회원가입
 - 최초 로그인 시 자동 프로필 생성
 - JWT 기반 토큰 구조로 **세션 유지 및 자동 재발급**
+
+
+### 👥 워크스페이스 & 멤버 관리
+<div style="display: flex; gap: 10px; align-items: flex-start;">
+  <img 
+    src="https://github.com/user-attachments/assets/a329e9d3-f78b-4cef-b762-db5b21eaaa32" 
+    style="width: 48%; height: 260px; object-fit: cover; object-position: top;" 
+  />
+  <img 
+    src="https://github.com/user-attachments/assets/6042159f-3b4b-4fc0-9199-85cde55ba6dc"
+    style="width: 48%; height: 260px; object-fit: cover; object-position: top;" 
+  />
+</div>
+
+- 여러 회사를 **워크스페이스 단위**로 분리하여 관리
+- 초대 코드로 워크스페이스 참여 가능, 코드가 없으면 새로운 워크스페이스 생성
+- 역할 기반 권한 설정 (`SUPER_ADMIN`, `ADMIN`, `MEMBER`)
+- 워크스페이스 전환 기능으로 **멀티 조직 환경** 지원
 
 
 ### 🏢 공간(회의실) 관리
@@ -157,19 +158,3 @@ https://placeit-client-332546556871.asia-northeast1.run.app/
 - 폰트: **Pretendard** (한글 가독성 최적화)
 - 배포: Google Cloud Run
 - 형상관리: Git / GitHub, Git Flow 브랜치 전략
-
----
-
-## 🧪 Mock 데이터 모드로 배포하기
-
-백엔드 API 없이도 제품 화면을 그대로 시연할 수 있도록 **모의 API 어댑터**를 포함했습니다. `NEXT_PUBLIC_USE_MOCK=true` 환경 변수를 활성화하면 axios가 로컬 mock 서버를 사용하며, 워크스페이스·회의실·예약·그룹 등의 더미 데이터가 자동으로 제공됩니다.
-
-1. `.env.local` 파일을 만들고 아래 값을 추가합니다.
-
-   ```bash
-   NEXT_PUBLIC_USE_MOCK=true
-   ```
-
-2. 이후 `npm run dev` 혹은 `npm run build && npm run start`를 실행하면 모든 API 호출이 mock 데이터로 응답합니다.
-
-> Mock 데이터는 회의실 등록/예약/그룹 관리 기능까지 포함하여 실제 서비스 흐름을 그대로 재현할 수 있도록 구성되어 있습니다.
